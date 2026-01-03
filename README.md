@@ -1,50 +1,198 @@
-# Welcome to your Expo app 👋
+# CalorieTracker - React Native Expo App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A sleek, minimalist calorie tracking app powered by OpenAI Vision API for intelligent food recognition and nutritional analysis.
 
-## Get started
+## 🎯 Features
 
-1. Install dependencies
+- 📷 **AI-Powered Food Recognition** - Snap photos of your meals and get instant nutritional analysis
+- 📊 **Daily Progress Tracking** - Visual dashboard with daily calorie goal and remaining calories
+- 💾 **Local Data Storage** - All meal data stored locally on your device
+- 🎨 **Minimalist Design** - Black & electric blue modern UI
+- ⚙️ **Customizable Settings** - Set your daily calorie goal and preferences
+- 🔒 **Secure API Key Storage** - OpenAI API key stored securely
 
-   ```bash
-   npm install
-   ```
+## 🚀 Quick Start (5 minutes)
 
-2. Start the app
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+- Expo CLI: `npm install -g expo-cli`
+- OpenAI API key (get free $5 credits at https://platform.openai.com)
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+### Setup
 ```bash
-npm run reset-project
+# Install dependencies
+npm install
+
+# Create .env file with your OpenAI API key
+echo 'OPENAI_API_KEY=your_api_key_here' > .env
+
+# Start development server
+npm start
+
+# Choose your platform:
+# Press 'i' for iOS Simulator
+# Press 'a' for Android Emulator
+# Press 'w' for Web
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+**For detailed setup instructions, see [SETUP_GUIDE.md](./SETUP_GUIDE.md)**
 
-## Learn more
+## 📱 How to Use
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Logging a Meal
+- Tap the **Camera** tab
+- Take a photo of your food
+- Select meal type (Breakfast, Lunch, Dinner, Snack)
+- Tap **Analyze** to get nutritional info
+- Meal is automatically saved
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 2. Tracking Progress
+- View **Dashboard** to see:
+  - Total calories consumed today
+  - Remaining calories to goal
+  - Daily progress percentage
+  - All logged meals with details
 
-## Join the community
+### 3. Customizing Settings
+- Tap **Settings** (⚙️) to:
+  - Set your daily calorie goal
+  - Choose measurement units
+  - View app information
 
-Join our community of developers creating universal apps.
+## 🎨 Design
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+**Color Scheme:**
+- **Primary:** Electric Blue (#00D9FF)
+- **Secondary:** Dark Blue (#0099CC)  
+- **Background:** Pure Black (#000000)
+- **Surface:** Dark Gray (#1A1A1A)
+- **Text:** White (#FFFFFF)
+
+Minimalist, modern design optimized for dark mode.
+
+## 📁 Project Structure
+
+```
+CalorieTracker/
+├── src/
+│   ├── screens/           # Main app screens
+│   ├── components/        # Reusable UI components
+│   ├── services/          # API & storage services
+│   ├── store/             # Zustand state management
+│   ├── styles/            # Theme & styling
+│   └── utils/             # Helper functions
+├── .env                   # API keys (NOT in git)
+├── app.json               # Expo configuration
+├── package.json           # Dependencies
+└── README.md              # This file
+```
+
+## 🔑 OpenAI API Setup
+
+### Get Your API Key
+1. Go to https://platform.openai.com/api-keys
+2. Sign up or log in
+3. Click "Create new secret key"
+4. Copy the key (format: `sk-...`)
+5. Add to `.env` file: `OPENAI_API_KEY=sk-your-key`
+
+### Free Trial Benefits
+- **$5 in free credits** for new accounts
+- Expires after 3 months
+- Enough for ~500 food image analyses
+- See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed instructions
+
+## 📚 Documentation
+
+- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup & troubleshooting
+- **[prd.md](./prd.md)** - Product requirements & specifications
+
+## 🛠️ Development
+
+### Available Commands
+```bash
+npm start           # Start development server
+npm run ios         # Run on iOS Simulator
+npm run android     # Run on Android Emulator
+npm run web         # Run in web browser
+npm run build:ios   # Build for iOS
+npm run build:android # Build for Android
+```
+
+### Project Technology Stack
+- **Framework:** React Native with Expo
+- **State Management:** Zustand
+- **Navigation:** React Navigation
+- **API:** OpenAI Vision API
+- **Storage:** AsyncStorage + Secure Storage
+- **UI Components:** React Native Paper
+- **Charts:** React Native Chart Kit
+
+## 📦 Dependencies
+
+```json
+{
+  "@react-navigation/native": "^6+",
+  "@react-navigation/bottom-tabs": "^6+",
+  "@react-navigation/stack": "^6+",
+  "zustand": "^4+",
+  "axios": "^1+",
+  "expo-camera": "^latest",
+  "@react-native-async-storage/async-storage": "^1+",
+  "expo-secure-store": "^latest"
+}
+```
+
+## ⚠️ Limitations (v1)
+
+- No offline analysis (requires internet)
+- Local storage only (no cloud backup yet)
+- No barcode scanning
+- English language only
+- AI accuracy depends on image quality
+
+## 🐛 Troubleshooting
+
+**"API key not configured"**
+- Verify `.env` file exists with valid key
+- Restart app with `npm start`
+
+**"Camera not working"**
+- Grant camera permissions in Settings
+- Restart the app
+
+**"Module not found"**
+```bash
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+See [SETUP_GUIDE.md](./SETUP_GUIDE.md#-common-issues--solutions) for more troubleshooting.
+
+## 🔒 Security
+
+- API keys stored securely (never hardcoded)
+- All data kept local on device
+- HTTPS only for API calls
+- No cloud storage of images
+
+## 📈 Roadmap
+
+**Phase 2:** Charts, cloud sync, quick-add history
+**Phase 3:** Barcode scanning, Apple Health integration, social features
+
+## 📄 License
+
+MIT License
+
+## 🙋 Support
+
+- Check [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed help
+- See [Expo Docs](https://docs.expo.dev)
+- Review [OpenAI Docs](https://platform.openai.com/docs)
+
+---
+
+**Made for health-conscious developers** 💪📱
