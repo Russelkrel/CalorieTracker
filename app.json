@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "CalorieTracker",
+    "slug": "calorie-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "calorietracker",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": false,
+    "entryPoint": "./App.js",
+    "ios": {
+      "supportsTablet": true,
+      "usesNonExemptEncryption": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "We need camera access to capture food images for nutritional analysis"
+      },
+      "bundleIdentifier": "com.anonymous.calorietracker"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.anonymous.calorietracker"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow CalorieTracker to access your camera to analyze food"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "tsconfigPaths": true
+    }
+  }
+}
