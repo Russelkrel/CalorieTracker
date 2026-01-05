@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  View,
+  FlatList,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   Text,
-  FlatList,
+  View
 } from 'react-native';
-import { colors, spacing } from '../styles/theme';
-import { useWaterStore } from '../store/waterStore';
-import WaterProgressChart from '../components/WaterProgressChart';
-import WaterIntakeLog from '../components/WaterIntakeLog';
-import WaterSettingsModal from '../components/WaterSettingsModal';
 import AlertModal from '../components/AlertModal';
+import AnimatedButton from '../components/AnimatedButton';
+import AnimatedContainer from '../components/AnimatedContainer';
+import WaterIntakeLog from '../components/WaterIntakeLog';
+import WaterProgressChart from '../components/WaterProgressChart';
+import { useWaterStore } from '../store/waterStore';
+import { colors, spacing } from '../styles/theme';
 
 export const WaterTrackerScreen = () => {
   const {
@@ -26,7 +26,6 @@ export const WaterTrackerScreen = () => {
   } = useWaterStore();
 
   const [refreshing, setRefreshing] = useState(false);
-  const [settingsVisible, setSettingsVisible] = useState(false);
   const [alertState, setAlertState] = useState({
     visible: false,
     title: '',
@@ -104,40 +103,36 @@ export const WaterTrackerScreen = () => {
               Daily Goal: {settings.dailyGoal}ml
             </Text>
           </View>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => setSettingsVisible(true)}
-          >
-            <Text style={styles.settingsIcon}>⚙️</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Progress Chart */}
-        <WaterProgressChart
-          current={todayTotal}
-          goal={settings.dailyGoal}
-          percentage={percentage}
-        />
+        <AnimatedContainer style={{ marginHorizontal: spacing.md, marginTop: spacing.md }}>
+          <WaterProgressChart
+            current={todayTotal}
+            goal={settings.dailyGoal}
+            percentage={percentage}
+          />
+        </AnimatedContainer>
 
         {/* Quick Add Buttons */}
-        <View style={styles.presetsContainer}>
+        <AnimatedContainer style={styles.presetsContainer}>
           <Text style={styles.sectionTitle}>Quick Add</Text>
           <View style={styles.presetGrid}>
             {presets.map((preset, index) => (
-              <TouchableOpacity
+              <AnimatedButton
                 key={index}
                 style={styles.presetButton}
                 onPress={() => handleAddWater(preset.amount)}
               >
                 <Text style={styles.presetLabel}>{preset.label}</Text>
-              </TouchableOpacity>
+              </AnimatedButton>
             ))}
           </View>
-        </View>
+        </AnimatedContainer>
 
-        {/* Today's Logs */}
+        {/* Today&apos;s Logs */}
         <View style={styles.logsContainer}>
-          <Text style={styles.sectionTitle}>Today's Logs</Text>
+          <Text style={styles.sectionTitle}>Today&apos;s Logs</Text>
           {todayWater.length > 0 ? (
             <FlatList
               data={todayWater}
@@ -157,13 +152,6 @@ export const WaterTrackerScreen = () => {
           )}
         </View>
       </ScrollView>
-
-      {/* Settings Modal */}
-      <WaterSettingsModal
-        visible={settingsVisible}
-        onClose={() => setSettingsVisible(false)}
-        onSave={() => getTodayWater()}
-      />
 
       {/* Alert Modal */}
       <AlertModal
@@ -200,12 +188,6 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-  },
-  settingsButton: {
-    padding: spacing.md,
-  },
-  settingsIcon: {
-    fontSize: 24,
   },
   presetsContainer: {
     paddingHorizontal: spacing.md,

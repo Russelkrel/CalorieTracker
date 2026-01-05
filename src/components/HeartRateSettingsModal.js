@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import {
-  View,
-  StyleSheet,
+  Alert,
   ScrollView,
-  TouchableOpacity,
+  StyleSheet,
+  Switch,
   Text,
   TextInput,
-  Alert,
-  Switch,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { colors, spacing } from '../styles/theme';
 import { useHeartRateStore } from '../store/heartRateStore';
+import { colors, spacing } from '../styles/theme';
+import AnimatedButton from './AnimatedButton';
 
 const HeartRateSettingsModal = ({ visible, onClose, onSave }) => {
   const settings = useHeartRateStore((state) => state.settings);
@@ -115,12 +116,12 @@ const HeartRateSettingsModal = ({ visible, onClose, onSave }) => {
         </View>
 
         {/* Save Button */}
-        <TouchableOpacity
+        <AnimatedButton
           style={styles.saveButton}
           onPress={handleSaveSettings}
         >
           <Text style={styles.saveButtonText}>Save Settings</Text>
-        </TouchableOpacity>
+        </AnimatedButton>
 
         <View style={{ height: spacing.lg }} />
       </ScrollView>

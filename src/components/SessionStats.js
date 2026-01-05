@@ -16,7 +16,7 @@ const SessionStats = ({ sessions }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Today's Stats</Text>
+      <Text style={styles.title}>Today&apos;s Stats</Text>
       <View style={styles.statsGrid}>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Sessions</Text>

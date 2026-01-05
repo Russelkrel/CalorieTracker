@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  Switch,
-  TextInput,
   Alert,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { colors, spacing } from '../styles/theme';
-import { useWaterStore } from '../store/waterStore';
 import { notificationService } from '../services/notificationService';
+import { useWaterStore } from '../store/waterStore';
+import { colors, spacing } from '../styles/theme';
+import AnimatedButton from './AnimatedButton';
 
 const WaterSettingsModal = ({ visible, onClose, onSave }) => {
   const { settings, updateSettings } = useWaterStore();
@@ -137,24 +138,24 @@ const WaterSettingsModal = ({ visible, onClose, onSave }) => {
             ))}
 
             {customTimes.length < 6 && (
-              <TouchableOpacity
+              <AnimatedButton
                 style={styles.addButton}
                 onPress={handleAddCustomTime}
               >
                 <Text style={styles.addButtonText}>+ Add Time</Text>
-              </TouchableOpacity>
+              </AnimatedButton>
             )}
           </View>
         )}
       </View>
 
       {/* Save Button */}
-      <TouchableOpacity
+      <AnimatedButton
         style={styles.saveButton}
         onPress={handleSaveSettings}
       >
         <Text style={styles.saveButtonText}>Save Settings</Text>
-      </TouchableOpacity>
+      </AnimatedButton>
 
       <View style={{ height: spacing.lg }} />
     </ScrollView>
@@ -164,23 +165,29 @@ const WaterSettingsModal = ({ visible, onClose, onSave }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     backgroundColor: colors.background,
-    padding: spacing.md,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.lg,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.lg,
+    paddingTop: spacing.md,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: colors.text,
   },
   closeBtn: {
-    fontSize: 24,
+    fontSize: 28,
     color: colors.text,
+    padding: spacing.sm,
   },
   section: {
     marginBottom: spacing.lg,
@@ -264,6 +271,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     marginTop: spacing.lg,
+    marginBottom: spacing.xl,
   },
   saveButtonText: {
     color: colors.background,

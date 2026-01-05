@@ -1,21 +1,20 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  View,
+  FlatList,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   Text,
-  Alert,
-  FlatList,
+  View
 } from 'react-native';
-import { colors, spacing } from '../styles/theme';
-import { useHeartRateStore } from '../store/heartRateStore';
-import SessionTimer from '../components/SessionTimer';
-import HeartRateInput from '../components/HeartRateInput';
-import SessionStats from '../components/SessionStats';
-import SessionHistory from '../components/SessionHistory';
-import HeartRateSettingsModal from '../components/HeartRateSettingsModal';
 import AlertModal from '../components/AlertModal';
+import AnimatedButton from '../components/AnimatedButton';
+import AnimatedContainer from '../components/AnimatedContainer';
+import HeartRateInput from '../components/HeartRateInput';
+import SessionHistory from '../components/SessionHistory';
+import SessionStats from '../components/SessionStats';
+import SessionTimer from '../components/SessionTimer';
+import { useHeartRateStore } from '../store/heartRateStore';
+import { colors, spacing } from '../styles/theme';
 
 export const HeartRateTrackerScreen = () => {
   const currentSession = useHeartRateStore((state) => state.currentSession);
@@ -29,7 +28,6 @@ export const HeartRateTrackerScreen = () => {
   const initializeStore = useHeartRateStore((state) => state.initializeStore);
 
   const [refreshing, setRefreshing] = useState(false);
-  const [settingsVisible, setSettingsVisible] = useState(false);
   const [initialBPM, setInitialBPM] = useState('');
   const [readyToStart, setReadyToStart] = useState(false);
   const [alertState, setAlertState] = useState({
@@ -213,12 +211,6 @@ export const HeartRateTrackerScreen = () => {
             <Text style={styles.headerTitle}>❤️ Heart Rate Monitor</Text>
             <Text style={styles.headerSubtitle}>Track your jogging sessions</Text>
           </View>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => setSettingsVisible(true)}
-          >
-            <Text style={styles.settingsIcon}>⚙️</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Debug Info */}
@@ -260,7 +252,7 @@ export const HeartRateTrackerScreen = () => {
                 });
               }}
             />
-            <View style={styles.readingsContainer}>
+            <AnimatedContainer style={styles.readingsContainer}>
               <Text style={styles.readingsTitle}>Heart Rate Readings</Text>
               {currentSession && currentSession.heartRateReadings.length > 0 ? (
                 <FlatList
@@ -279,12 +271,12 @@ export const HeartRateTrackerScreen = () => {
               ) : (
                 <Text style={styles.noReadings}>No readings yet</Text>
               )}
-            </View>
+            </AnimatedContainer>
           </View>
         ) : (
           <>
             {/* BPM Input Before Starting */}
-            <View style={styles.preSessionContainer}>
+            <AnimatedContainer style={styles.preSessionContainer}>
               <Text style={styles.sectionTitle}>Enter Initial BPM</Text>
               <View style={styles.inputGroup}>
                 <HeartRateInput
@@ -294,7 +286,7 @@ export const HeartRateTrackerScreen = () => {
                   }}
                 />
               </View>
-              <TouchableOpacity
+              <AnimatedButton
                 style={[
                   styles.startButton,
                   !readyToStart && styles.startButtonDisabled,
@@ -303,18 +295,20 @@ export const HeartRateTrackerScreen = () => {
                 disabled={!readyToStart}
               >
                 <Text style={styles.startButtonText}>Start Session</Text>
-              </TouchableOpacity>
-            </View>
+              </AnimatedButton>
+            </AnimatedContainer>
 
             {/* Session Stats */}
             {todaySessions.length > 0 && (
-              <SessionStats sessions={todaySessions} />
+              <AnimatedContainer style={{ marginHorizontal: spacing.md, marginTop: spacing.lg }}>
+                <SessionStats sessions={todaySessions} />
+              </AnimatedContainer>
             )}
 
             {/* Session History */}
             {todaySessions.length > 0 && (
-              <View style={styles.historyContainer}>
-                <Text style={styles.historyTitle}>Today's Sessions</Text>
+              <AnimatedContainer style={styles.historyContainer}>
+                <Text style={styles.historyTitle}>Today&apos;s Sessions</Text>
                 <FlatList
                   data={todaySessions}
                   keyExtractor={(item) => item.id}
@@ -326,18 +320,11 @@ export const HeartRateTrackerScreen = () => {
                     />
                   )}
                 />
-              </View>
+              </AnimatedContainer>
             )}
           </>
         )}
       </ScrollView>
-
-      {/* Settings Modal */}
-      <HeartRateSettingsModal
-        visible={settingsVisible}
-        onClose={() => setSettingsVisible(false)}
-        onSave={() => getTodaySessions()}
-      />
 
       {/* Alert Modal */}
       <AlertModal
@@ -374,12 +361,6 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-  },
-  settingsButton: {
-    padding: spacing.md,
-  },
-  settingsIcon: {
-    fontSize: 24,
   },
   preSessionContainer: {
     paddingHorizontal: spacing.md,

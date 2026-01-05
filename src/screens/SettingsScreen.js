@@ -1,47 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  TextInput,
-  Pressable,
   Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
+import AnimatedButton from '../components/AnimatedButton';
+import AnimatedContainer from '../components/AnimatedContainer';
+import HeartRateSettingsModal from '../components/HeartRateSettingsModal';
+import MealSettingsModal from '../components/MealSettingsModal';
+import WaterSettingsModal from '../components/WaterSettingsModal';
 import { colors, spacing } from '../styles/theme';
-import { useMealStore } from '../store/mealStore';
 
 export const SettingsScreen = ({ navigation }) => {
-  const [dailyGoal, setDailyGoal] = useState('2000');
-  const [darkMode, setDarkMode] = useState(true);
-  const [units, setUnits] = useState('metric');
-  const settings = useMealStore((state) => state.settings);
-  const updateSettings = useMealStore((state) => state.updateSettings);
-
-  useEffect(() => {
-    setDailyGoal(settings.dailyCalorieGoal.toString());
-    setDarkMode(settings.darkMode);
-    setUnits(settings.preferredUnits);
-  }, [settings]);
-
-  const handleSaveSettings = async () => {
-    try {
-      const newSettings = {
-        dailyCalorieGoal: parseInt(dailyGoal) || 2000,
-        darkMode,
-        preferredUnits: units,
-      };
-      await updateSettings(newSettings);
-      Alert.alert('Success', 'Settings saved successfully');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to save settings');
-    }
-  };
+  const [waterSettingsVisible, setWaterSettingsVisible] = useState(false);
+  const [heartRateSettingsVisible, setHeartRateSettingsVisible] = useState(false);
+  const [mealSettingsVisible, setMealSettingsVisible] = useState(false);
 
   const handleClearAllData = () => {
     Alert.alert(
       'Clear All Data',
-      'This will delete all your meal history. This action cannot be undone.',
+      'This will delete all your history. This action cannot be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -56,6 +38,22 @@ export const SettingsScreen = ({ navigation }) => {
     );
   };
 
+  const SettingCard = ({ title, description, icon, onPress }) => (
+    <AnimatedButton
+      onPress={onPress}
+      style={styles.settingCard}
+    >
+      <View style={styles.cardContent}>
+        <Text style={styles.cardIcon}>{icon}</Text>
+        <View style={styles.cardTextContainer}>
+          <Text style={styles.cardTitle}>{title}</Text>
+          <Text style={styles.cardDescription}>{description}</Text>
+        </View>
+      </View>
+      <Text style={styles.cardArrow}>›</Text>
+    </AnimatedButton>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -68,67 +66,96 @@ export const SettingsScreen = ({ navigation }) => {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Daily Calorie Goal</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="2000"
-              placeholderTextColor={colors.textSecondary}
-              value={dailyGoal}
-              onChangeText={setDailyGoal}
-              keyboardType="number-pad"
-            />
-            <Text style={styles.inputLabel}>calories</Text>
-          </View>
+          <Text style={styles.sectionLabel}>Tracker Settings</Text>
+          
+          <SettingCard
+            title="Calorie Tracker"
+            description="Daily goals and meal tracking"
+            icon="🍎"
+            onPress={() => setMealSettingsVisible(true)}
+          />
+
+          <SettingCard
+            title="Water Tracker"
+            description="Hydration reminders and goals"
+            icon="💧"
+            onPress={() => setWaterSettingsVisible(true)}
+          />
+
+          <SettingCard
+            title="Heart Rate Monitor"
+            description="Age, weight & calorie calculations"
+            icon="❤️"
+            onPress={() => setHeartRateSettingsVisible(true)}
+          />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Measurement Units</Text>
-          <View style={styles.buttonGroup}>
-            {['metric', 'imperial'].map((unit) => (
-              <Pressable
-                key={unit}
-                onPress={() => setUnits(unit)}
-                style={[
-                  styles.optionButton,
-                  units === unit && styles.optionButtonActive,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.optionButtonText,
-                    units === unit && styles.optionButtonTextActive,
-                  ]}
-                >
-                  {unit === 'metric' ? 'Metric (g)' : 'Imperial (oz)'}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          <Text style={styles.sectionLabel}>App Settings</Text>
+          <AnimatedContainer style={styles.settingCard}>
+            <View style={styles.cardContent}>
+              <Text style={styles.cardIcon}>ℹ️</Text>
+              <View style={styles.cardTextContainer}>
+                <Text style={styles.cardTitle}>About</Text>
+                <Text style={styles.cardDescription}>Version 1.0.0</Text>
+              </View>
+            </View>
+          </AnimatedContainer>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.infoText}>Version 1.0.0</Text>
-          <Text style={styles.infoText}>
-            CalorieTracker with OpenAI Vision
-          </Text>
-        </View>
-
-        <Pressable
-          style={styles.saveButton}
-          onPress={handleSaveSettings}
-        >
-          <Text style={styles.saveButtonText}>Save Settings</Text>
-        </Pressable>
-
-        <Pressable
+        <AnimatedButton
           style={styles.dangerButton}
           onPress={handleClearAllData}
         >
           <Text style={styles.dangerButtonText}>Clear All Data</Text>
-        </Pressable>
+        </AnimatedButton>
       </ScrollView>
+
+      {/* Settings Modals */}
+      <Modal
+        visible={mealSettingsVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setMealSettingsVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <MealSettingsModal
+            visible={mealSettingsVisible}
+            onClose={() => setMealSettingsVisible(false)}
+            onSave={() => setMealSettingsVisible(false)}
+          />
+        </View>
+      </Modal>
+
+      <Modal
+        visible={waterSettingsVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setWaterSettingsVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <WaterSettingsModal
+            visible={waterSettingsVisible}
+            onClose={() => setWaterSettingsVisible(false)}
+            onSave={() => setWaterSettingsVisible(false)}
+          />
+        </View>
+      </Modal>
+
+      <Modal
+        visible={heartRateSettingsVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setHeartRateSettingsVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <HeartRateSettingsModal
+            visible={heartRateSettingsVisible}
+            onClose={() => setHeartRateSettingsVisible(false)}
+            onSave={() => setHeartRateSettingsVisible(false)}
+          />
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -144,6 +171,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
+    paddingTop: spacing.lg,
   },
   backButton: {
     fontSize: 16,
@@ -151,93 +179,76 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
     color: colors.text,
   },
   content: {
     flex: 1,
     paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.lg,
   },
   section: {
     marginBottom: spacing.xl,
-    paddingBottom: spacing.lg,
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-  },
-  input: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    color: colors.text,
-    fontSize: 16,
-  },
-  inputLabel: {
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: '700',
     color: colors.textSecondary,
-    fontSize: 12,
-    marginLeft: spacing.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.sm,
   },
-  buttonGroup: {
+  settingCard: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  optionButton: {
-    flex: 1,
-    marginRight: spacing.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: spacing.md,
+    marginBottom: spacing.md,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  optionButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  optionButtonText: {
-    color: colors.textSecondary,
-    fontWeight: '500',
-  },
-  optionButtonTextActive: {
-    color: colors.background,
-  },
-  infoText: {
-    color: colors.textSecondary,
-    fontSize: 13,
-    marginBottom: spacing.sm,
-  },
-  saveButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: spacing.md,
-    borderRadius: 8,
+  cardContent: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    flex: 1,
   },
-  saveButtonText: {
-    color: colors.background,
-    fontWeight: '600',
+  cardIcon: {
+    fontSize: 28,
+    marginRight: spacing.md,
+  },
+  cardTextContainer: {
+    flex: 1,
+  },
+  cardTitle: {
     fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: spacing.xs,
+  },
+  cardDescription: {
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  cardArrow: {
+    fontSize: 20,
+    color: colors.textSecondary,
+    marginLeft: spacing.md,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
   },
   dangerButton: {
     backgroundColor: colors.error,
     paddingVertical: spacing.md,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginVertical: spacing.lg,
   },
   dangerButtonText: {
     color: colors.background,

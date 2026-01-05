@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  Pressable,
-  Alert,
-} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { colors, spacing } from '../styles/theme';
+import React, { useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
+import AnimatedButton from '../components/AnimatedButton';
+import AnimatedContainer from '../components/AnimatedContainer';
 import { CalorieProgress } from '../components/CalorieProgress';
 import { MacroChart } from '../components/MacroChart';
 import { MealCard } from '../components/MealCard';
 import { useMealStore } from '../store/mealStore';
+import { colors, spacing } from '../styles/theme';
 
 export const DashboardScreen = ({ navigation }) => {
   const [todayCalories, setTodayCalories] = useState(0);
@@ -70,28 +71,32 @@ export const DashboardScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>CalorieTracker</Text>
-        <Pressable onPress={() => navigation.navigate('Settings')}>
+        <AnimatedButton onPress={() => navigation.navigate('Settings')}>
           <Text style={styles.settingsIcon}>⚙️</Text>
-        </Pressable>
+        </AnimatedButton>
       </View>
 
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <CalorieProgress
-          consumed={todayCalories}
-          goal={settings.dailyCalorieGoal}
-        />
+        <AnimatedContainer>
+          <CalorieProgress
+            consumed={todayCalories}
+            goal={settings.dailyCalorieGoal}
+          />
+        </AnimatedContainer>
 
-        <MacroChart
-          protein={macros.protein > 0 ? Math.round(macros.protein) : 30}
-          carbs={macros.carbs > 0 ? Math.round(macros.carbs) : 120}
-          fat={macros.fat > 0 ? Math.round(macros.fat) : 25}
-        />
+        <AnimatedContainer>
+          <MacroChart
+            protein={macros.protein > 0 ? Math.round(macros.protein) : 30}
+            carbs={macros.carbs > 0 ? Math.round(macros.carbs) : 120}
+            fat={macros.fat > 0 ? Math.round(macros.fat) : 25}
+          />
+        </AnimatedContainer>
 
         <View style={styles.mealsSection}>
-          <Text style={styles.sectionTitle}>Today's Meals</Text>
+          <Text style={styles.sectionTitle}>Today&apos;s Meals</Text>
           {todayMeals.length === 0 ? (
             <View style={styles.emptyState}>
               <Text style={styles.emptyStateText}>No meals logged yet</Text>
@@ -101,25 +106,29 @@ export const DashboardScreen = ({ navigation }) => {
             </View>
           ) : (
             todayMeals.map((meal) => (
-              <MealCard
+              <AnimatedContainer
                 key={meal.id}
-                meal={meal}
-                onDelete={() => handleDeleteMeal(meal.id)}
-                onPress={() => {
-                  // Navigate to meal details if needed
-                }}
-              />
+                style={{ marginBottom: spacing.md }}
+              >
+                <MealCard
+                  meal={meal}
+                  onDelete={() => handleDeleteMeal(meal.id)}
+                  onPress={() => {
+                    // Navigate to meal details if needed
+                  }}
+                />
+              </AnimatedContainer>
             ))
           )}
         </View>
       </ScrollView>
 
-      <Pressable
+      <AnimatedButton
         style={styles.fab}
         onPress={() => navigation.navigate('Camera')}
       >
         <Text style={styles.fabIcon}>📷</Text>
-      </Pressable>
+      </AnimatedButton>
     </View>
   );
 };
