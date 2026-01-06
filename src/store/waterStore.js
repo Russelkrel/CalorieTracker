@@ -85,6 +85,26 @@ export const useWaterStore = create((set) => ({
     }
   },
 
+  // Remove all today's water logs
+  removeAllTodayLogs: async () => {
+    set({ loading: true });
+    try {
+      const today = getTodayDate();
+      for (const log of await (async () => {
+        return (await storageService.getWaterLogsByDate(today)) || [];
+      })()) {
+        await storageService.deleteWaterLog(log.id);
+      }
+      set(() => ({
+        waterLogs: [],
+        todayWater: [],
+        loading: false,
+      }));
+    } catch (err) {
+      set({ error: err.message, loading: false });
+    }
+  },
+
   // Update water settings
   updateSettings: async (newSettings) => {
     set({ loading: true });

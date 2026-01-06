@@ -24,6 +24,7 @@ export const HeartRateTrackerScreen = () => {
   const endSession = useHeartRateStore((state) => state.endSession);
   const cancelSession = useHeartRateStore((state) => state.cancelSession);
   const deleteSession = useHeartRateStore((state) => state.deleteSession);
+  const deleteAllTodaySessions = useHeartRateStore((state) => state.deleteAllTodaySessions);
   const getTodaySessions = useHeartRateStore((state) => state.getTodaySessions);
   const initializeStore = useHeartRateStore((state) => state.initializeStore);
 
@@ -198,6 +199,38 @@ export const HeartRateTrackerScreen = () => {
     });
   }, [deleteSession, getTodaySessions]);
 
+  const handleDeleteAllSessions = useCallback(() => {
+    setAlertState({
+      visible: true,
+      title: 'Delete All Sessions',
+      message: 'Are you sure you want to delete all today\'s sessions? This cannot be undone.',
+      buttons: [
+        { 
+          text: 'Cancel', 
+          style: 'cancel',
+          onPress: () => {}
+        },
+        {
+          text: 'Delete All',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteAllTodaySessions();
+              await getTodaySessions();
+            } catch (error) {
+              setAlertState({
+                visible: true,
+                title: 'Error',
+                message: 'Failed to delete sessions',
+                buttons: [{ text: 'OK', onPress: () => {} }],
+              });
+            }
+          },
+        },
+      ],
+    });
+  }, [deleteAllTodaySessions, getTodaySessions]);
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -308,7 +341,15 @@ export const HeartRateTrackerScreen = () => {
             {/* Session History */}
             {todaySessions.length > 0 && (
               <AnimatedContainer style={styles.historyContainer}>
-                <Text style={styles.historyTitle}>Today&apos;s Sessions</Text>
+                <View style={styles.historyHeaderContainer}>
+                  <Text style={styles.historyTitle}>Today&apos;s Sessions</Text>
+                  <AnimatedButton
+                    style={styles.deleteAllButton}
+                    onPress={handleDeleteAllSessions}
+                  >
+                    <Text style={styles.deleteAllButtonText}>Delete All</Text>
+                  </AnimatedButton>
+                </View>
                 <FlatList
                   data={todaySessions}
                   keyExtractor={(item) => item.id}
@@ -448,5 +489,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
     marginBottom: spacing.md,
+  },
+  historyHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  deleteAllButton: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    backgroundColor: '#FF6B6B',
+    borderRadius: 8,
+  },
+  deleteAllButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#fff',
   },
 });

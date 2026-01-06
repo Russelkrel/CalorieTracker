@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -69,6 +70,15 @@ export const DashboardScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Logo */}
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../../assets/images/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+
       <View style={styles.header}>
         <Text style={styles.headerTitle}>CalorieTracker</Text>
         <AnimatedButton onPress={() => navigation.navigate('Settings')}>
@@ -137,6 +147,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  logoContainer: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  logo: {
+    width: 110,
+    height: 110,
   },
   header: {
     flexDirection: 'row',

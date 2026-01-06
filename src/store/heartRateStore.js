@@ -157,6 +157,22 @@ export const useHeartRateStore = create((set) => ({
     }
   },
 
+  // Delete all today's sessions
+  deleteAllTodaySessions: async () => {
+    try {
+      const state = useHeartRateStore.getState();
+      for (const session of state.todaySessions) {
+        await storageService.deleteHeartRateSession(session.id);
+      }
+      set({
+        sessions: [],
+        todaySessions: [],
+      });
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
+
   // Update settings
   updateSettings: async (newSettings) => {
     set({ loading: true });

@@ -57,7 +57,6 @@ const AnimatedButton = ({
   return (
     <Animated.View
       style={[
-        style,
         {
           transform: [{ scale: scaleValue }],
         },
@@ -70,6 +69,7 @@ const AnimatedButton = ({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         disabled={disabled}
+        style={[style, { flex: 1 }]}
         {...props}
       >
         {children}
